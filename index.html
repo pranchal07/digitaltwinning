@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twin - Student Health Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Digital Twin</span>
+                </div>
+                <div class="user-info" id="userInfo">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name" id="userName">Demo Student</span>
+                        <span class="user-status">Online</span>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active" data-view="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#analytics" class="nav-link" data-view="analytics">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="nav-text">Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#academic" class="nav-link" data-view="academic">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span class="nav-text">Academic</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#lifestyle" class="nav-link" data-view="lifestyle">
+                        <i class="fas fa-running"></i>
+                        <span class="nav-text">Lifestyle</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#input" class="nav-link" data-view="input">
+                        <i class="fas fa-plus-circle"></i>
+                        <span class="nav-text">Input Data</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#alerts" class="nav-link" data-view="alerts">
+                        <i class="fas fa-bell"></i>
+                        <span class="nav-text">Alerts</span>
+                        <span class="nav-badge" id="alertCount">3</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#devices" class="nav-link" data-view="devices">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span class="nav-text">Devices</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#profile" class="nav-link" data-view="profile">
+                        <i class="fas fa-user-cog"></i>
+                        <span class="nav-text">Profile</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <button class="btn btn--secondary btn--full-width" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view active">
+                <!-- Header -->
+                <header class="page-header">
+                    <div class="header-content">
+                        <h1 class="page-title">Health Dashboard</h1>
+                        <div class="header-actions">
+                            <div class="last-updated" id="lastUpdated">
+                                Last updated: <span id="lastUpdatedTime">Just now</span>
+                            </div>
+                            <button class="btn btn--primary" id="refreshDataBtn">
+                                <i class="fas fa-sync-alt"></i>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Overall Health Status -->
+                <div class="health-status-banner">
+                    <div class="status-content">
+                        <div class="status-icon">
+                            <i class="fas fa-heart" id="healthStatusIcon"></i>
+                        </div>
+                        <div class="status-info">
+                            <h2 class="status-title" id="healthStatusTitle">Excellent</h2>
+                            <p class="status-subtitle">Overall Health Status</p>
+                        </div>
+                        <div class="status-score">
+                            <div class="score-circle" id="healthScore">95</div>
+                            <span class="score-label">Health Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Metrics Grid -->
+                <div class="dashboard-grid">
+                    <section class="metrics-section">
+                        <h3 class="section-title">Vital Signs</h3>
+                        <div class="health-metrics-grid">
+                            <div class="metric-card heart-rate">
+                                <div class="metric-header">
+                                    <i class="fas fa-heartbeat"></i>
+                                    <span class="metric-label">Heart Rate</span>
+                                </div>
+                                <div class="metric-value" id="heartRateValue">78 BPM</div>
+                                <div class="metric-status normal" id="heartRateStatus">Normal</div>
+                            </div>
+
+                            <div class="metric-card blood-pressure">
+                                <div class="metric-header">
+                                    <i class="fas fa-thermometer-half"></i>
+                                    <span class="metric-label">Blood Pressure</span>
+                                </div>
+                                <div class="metric-value" id="bloodPressureValue">118/76 mmHg</div>
+                                <div class="metric-status normal" id="bloodPressureStatus">Optimal</div>
+                            </div>
+
+                            <div class="metric-card oxygen">
+                                <div class="metric-header">
+                                    <i class="fas fa-lungs"></i>
+                                    <span class="metric-label">Oxygen Saturation</span>
+                                </div>
+                                <div class="metric-value" id="oxygenValue">98 %</div>
+                                <div class="metric-status normal" id="oxygenStatus">Normal</div>
+                            </div>
+
+                            <div class="metric-card stress">
+                                <div class="metric-header">
+                                    <i class="fas fa-brain"></i>
+                                    <span class="metric-label">Stress Level</span>
+                                </div>
+                                <div class="metric-value" id="stressValue">Low</div>
+                                <div class="metric-status good" id="stressStatus">Good</div>
+                            </div>
+
+                            <div class="metric-card sleep">
+                                <div class="metric-header">
+                                    <i class="fas fa-moon"></i>
+                                    <span class="metric-label">Sleep Quality</span>
+                                </div>
+                                <div class="metric-value" id="sleepValue">85 /100</div>
+                                <div class="metric-status good" id="sleepStatus">Good</div>
+                            </div>
+
+                            <div class="metric-card activity">
+                                <div class="metric-header">
+                                    <i class="fas fa-walking"></i>
+                                    <span class="metric-label">Daily Steps</span>
+                                </div>
+                                <div class="metric-value" id="stepsValue">8,247</div>
+                                <div class="metric-status" id="stepsStatus">82% of goal</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <aside class="sidebar-content">
+                        <!-- Recent Alerts -->
+                        <div class="alerts-panel">
+                            <h3 class="panel-title">Recent Alerts</h3>
+                            <div class="alerts-list" id="alertsList">
+                                <!-- Alerts will be dynamically loaded -->
+                            </div>
+                        </div>
+
+                        <!-- Today's Summary -->
+                        <div class="summary-panel">
+                            <h3 class="panel-title">Today's Summary</h3>
+                            <div class="summary-grid">
+                                <div class="summary-item">
+                                    <span class="summary-label">Study Hours</span>
+                                    <span class="summary-value" id="todayStudyHours">4.5h</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Calories Burned</span>
+                                    <span class="summary-value" id="todayCalories">2,156</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Water Intake</span>
+                                    <span class="summary-value" id="todayWater">6 glasses</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Screen Time</span>
+                                    <span class="summary-value" id="todayScreenTime">5.2h</span>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+
+                <!-- AI Insights & Recommendations -->
+                <section class="insights-section">
+                    <h3 class="section-title">AI Insights & Recommendations</h3>
+                    <div class="insights-grid">
+                        <div class="insight-card burnout-risk">
+                            <div class="insight-header">
+                                <h4>Burnout Risk Assessment</h4>
+                                <div class="risk-meter">
+                                    <div class="risk-value" id="burnoutRisk">23%</div>
+                                    <div class="risk-level low" id="burnoutLevel">Low Risk</div>
+                                </div>
+                            </div>
+                            <div class="insight-content">
+                                <p>Your current stress levels and sleep patterns indicate low burnout risk. Keep maintaining your healthy habits!</p>
+                            </div>
+                        </div>
+
+                        <div class="insight-card recommendations">
+                            <div class="insight-header">
+                                <h4>Personalized Recommendations</h4>
+                            </div>
+                            <div class="insight-content">
+                                <ul class="recommendations-list" id="recommendationsList">
+                                    <!-- Recommendations will be dynamically loaded -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analytics-view" class="view">
+                <header class="page-header">
+                    <h1 class="page-title">Health Analytics</h1>
+                </header>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h4>Heart Rate Trends</h4>
+                        <canvas id="heartRateChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h4>Sleep Quality Analysis</h4>
+                        <canvas id="sleepChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h4>Stress Level Patterns</h4>
+                        <canvas id="stressChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h4>Activity Trends</h4>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic View -->
+            <div id="academic-view" class="view">
+                <header class="page-header">
+                    <h1 class="page-title">Academic Performance</h1>
+                </header>
+
+                <div class="academic-grid">
+                    <div class="academic-card gpa">
+                        <div class="card-header">
+                            <h4>Current GPA</h4>
+                            <div class="gpa-value" id="currentGPA">3.67</div>
+                        </div>
+                        <div class="gpa-trend" id="gpaTrend">+0.12</div>
+                    </div>
+
+                    <div class="academic-card study-hours">
+                        <div class="card-header">
+                            <h4>Study Hours (This Week)</h4>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="studyProgress" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <span id="weeklyStudyHours">28h</span> / <span id="targetStudyHours">35h</span>
+                        </div>
+                    </div>
+
+                    <div class="academic-card assignments">
+                        <div class="card-header">
+                            <h4>Assignment Completion</h4>
+                        </div>
+                        <div class="assignment-stats">
+                            <div class="stat-item">
+                                <span class="stat-value" id="completedAssignments">12</span>
+                                <span class="stat-label">Completed</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="pendingAssignments">3</span>
+                                <span class="stat-label">Pending</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="overdueAssignments">1</span>
+                                <span class="stat-label">Overdue</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="academic-card attendance">
+                        <div class="card-header">
+                            <h4>Attendance Rate</h4>
+                            <div class="attendance-value" id="attendanceRate">94%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Exams -->
+                <section class="exams-section">
+                    <h3 class="section-title">Upcoming Exams</h3>
+                    <div class="exams-list" id="examsList">
+                        <!-- Exams will be dynamically loaded -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Lifestyle View -->
+            <div id="lifestyle-view" class="view">
+                <header class="page-header">
+                    <h1 class="page-title">Lifestyle Tracking</h1>
+                </header>
+
+                <div class="lifestyle-grid">
+                    <div class="lifestyle-card activity">
+                        <div class="card-header">
+                            <h4>Daily Activity</h4>
+                        </div>
+                        <div class="activity-stats">
+                            <div class="stat-item">
+                                <span class="stat-value" id="dailySteps">8,247</span>
+                                <span class="stat-label">Steps</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="dailyCalories">2,156</span>
+                                <span class="stat-label">Calories</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lifestyle-card hydration">
+                        <div class="card-header">
+                            <h4>Hydration & Nutrition</h4>
+                        </div>
+                        <div class="hydration-progress">
+                            <div class="progress-circle" id="waterProgress">
+                                <span class="progress-value" id="waterIntake">6</span> / 8 glasses
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lifestyle-card screen-time">
+                        <div class="card-header">
+                            <h4>Screen Time</h4>
+                        </div>
+                        <div class="screen-stats">
+                            <div class="screen-value" id="screenTime">5.2 hours today</div>
+                            <div class="screen-status warning">Above recommended</div>
+                        </div>
+                    </div>
+
+                    <div class="lifestyle-card mood">
+                        <div class="card-header">
+                            <h4>Mood & Social</h4>
+                        </div>
+                        <div class="mood-stats">
+                            <div class="mood-rating" id="moodRating">😊 7/10</div>
+                            <div class="social-interactions" id="socialInteractions">5 interactions today</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Goals Progress -->
+                <section class="goals-section">
+                    <h3 class="section-title">Daily Goals Progress</h3>
+                    <div class="goals-grid" id="goalsGrid">
+                        <!-- Goals will be dynamically loaded -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Input Data View -->
+            <div id="input-view" class="view">
+                <header class="page-header">
+                    <h1 class="page-title">Input Health Data</h1>
+                    <p class="page-subtitle">Record your health metrics and lifestyle data</p>
+                </header>
+
+                <div class="input-container">
+                    <div class="input-tabs">
+                        <button class="tab-btn active" data-tab="health">Health Metrics</button>
+                        <button class="tab-btn" data-tab="academic">Academic Data</button>
+                        <button class="tab-btn" data-tab="lifestyle">Lifestyle</button>
+                    </div>
+
+                    <!-- Health Data Input -->
+                    <div id="health-input" class="tab-content active">
+                        <form id="healthForm" class="input-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-heartbeat"></i>
+                                        Heart Rate (BPM)
+                                    </label>
+                                    <input type="number" name="heartRate" class="form-control" min="40" max="200" placeholder="e.g., 75">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-thermometer-half"></i>
+                                        Systolic BP (mmHg)
+                                    </label>
+                                    <input type="number" name="systolic" class="form-control" min="70" max="200" placeholder="e.g., 120">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-thermometer-half"></i>
+                                        Diastolic BP (mmHg)
+                                    </label>
+                                    <input type="number" name="diastolic" class="form-control" min="40" max="120" placeholder="e.g., 80">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-lungs"></i>
+                                        Oxygen Saturation (%)
+                                    </label>
+                                    <input type="number" name="oxygenSaturation" class="form-control" min="70" max="100" placeholder="e.g., 98">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-brain"></i>
+                                        Stress Level
+                                    </label>
+                                    <select name="stressLevel" class="form-control">
+                                        <option value="">Select stress level...</option>
+                                        <option value="1">1 - Very Low</option>
+                                        <option value="2">2 - Low</option>
+                                        <option value="3">3 - Moderate</option>
+                                        <option value="4">4 - High</option>
+                                        <option value="5">5 - Very High</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-moon"></i>
+                                        Sleep Duration (hours)
+                                    </label>
+                                    <input type="number" name="sleepDuration" class="form-control" min="0" max="24" step="0.5" placeholder="e.g., 7.5">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-star"></i>
+                                        Sleep Quality (0-100)
+                                    </label>
+                                    <input type="number" name="sleepQuality" class="form-control" min="0" max="100" placeholder="e.g., 85">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-walking"></i>
+                                        Steps Count
+                                    </label>
+                                    <input type="number" name="stepsCount" class="form-control" min="0" placeholder="e.g., 8247">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-tint"></i>
+                                        Water Intake (glasses)
+                                    </label>
+                                    <input type="number" name="waterIntake" class="form-control" min="0" max="20" placeholder="e.g., 6">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-smile"></i>
+                                        Mood Rating (1-10)
+                                    </label>
+                                    <input type="number" name="moodRating" class="form-control" min="1" max="10" placeholder="e.g., 7">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn--primary btn--large">
+                                    <i class="fas fa-save"></i>
+                                    Save Health Data
+                                </button>
+                                <button type="button" class="btn btn--secondary" id="generateSampleHealthData">
+                                    <i class="fas fa-random"></i>
+                                    Generate Sample Data
+                                </button>
+                                <button type="reset" class="btn btn--ghost">
+                                    <i class="fas fa-times"></i>
+                                    Clear Form
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Academic Data Input -->
+                    <div id="academic-input" class="tab-content">
+                        <form id="academicForm" class="input-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-graduation-cap"></i>
+                                        Current GPA
+                                    </label>
+                                    <input type="number" name="currentGPA" class="form-control" min="0" max="4" step="0.01" placeholder="e.g., 3.67">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-clock"></i>
+                                        Daily Study Hours
+                                    </label>
+                                    <input type="number" name="dailyStudyHours" class="form-control" min="0" step="0.5" placeholder="e.g., 4.5">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-percentage"></i>
+                                        Attendance Percentage
+                                    </label>
+                                    <input type="number" name="attendancePercentage" class="form-control" min="0" max="100" placeholder="e.g., 94">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-check-circle"></i>
+                                        Assignments Completed
+                                    </label>
+                                    <input type="number" name="assignmentsCompleted" class="form-control" min="0" placeholder="e.g., 12">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn--primary btn--large">
+                                    <i class="fas fa-save"></i>
+                                    Save Academic Data
+                                </button>
+                                <button type="button" class="btn btn--secondary" id="generateSampleAcademicData">
+                                    <i class="fas fa-random"></i>
+                                    Generate Sample Data
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Lifestyle Data Input -->
+                    <div id="lifestyle-input" class="tab-content">
+                        <form id="lifestyleForm" class="input-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-desktop"></i>
+                                        Screen Time (hours)
+                                    </label>
+                                    <input type="number" name="screenTime" class="form-control" min="0" step="0.1" placeholder="e.g., 5.2">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-users"></i>
+                                        Social Interactions
+                                    </label>
+                                    <input type="number" name="socialInteractions" class="form-control" min="0" placeholder="e.g., 5">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn--primary btn--large">
+                                    <i class="fas fa-save"></i>
+                                    Save Lifestyle Data
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts View -->
+            <div id="alerts-view" class="view">
+                <header class="page-header">
+                    <h1 class="page-title">Health Alerts & Notifications</h1>
+                </header>
+
+                <div class="alerts-container" id="alertsContainer">
+                    <!-- Alerts will be dynamically loaded -->
+                </div>
+            </div>
+
+            <!-- Devices View -->
+            <div id="devices-view" class="view">
+                <header class="page-header">
+                    <h1 class="page-title">Connected Devices</h1>
+                </header>
+
+                <div class="devices-grid" id="devicesGrid">
+                    <!-- Devices will be dynamically loaded -->
+                </div>
+            </div>
+
+            <!-- Profile View -->
+            <div id="profile-view" class="view">
+                <header class="page-header">
+                    <h1 class="page-title">User Profile</h1>
+                </header>
+
+                <div class="profile-container">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="profile-info">
+                                <h3 id="profileName">Demo Student</h3>
+                                <p id="profileEmail">demo@student.com</p>
+                            </div>
+                        </div>
+
+                        <form id="profileForm" class="profile-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" name="firstName" class="form-control" id="profileFirstName">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" name="lastName" class="form-control" id="profileLastName">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-control" id="profileEmailInput">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Height (cm)</label>
+                                    <input type="number" name="height" class="form-control" id="profileHeight">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Weight (kg)</label>
+                                    <input type="number" name="weight" class="form-control" id="profileWeight">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Gender</label>
+                                    <select name="gender" class="form-control" id="profileGender">
+                                        <option value="">Select gender...</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn--primary btn--large">
+                                    <i class="fas fa-save"></i>
+                                    Update Profile
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <h3>Loading Your Digital Twin...</h3>
+            <p>Connecting to backend services...</p>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
